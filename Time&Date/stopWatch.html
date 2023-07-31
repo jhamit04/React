@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lect-9</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+</head>
+<!-- two way binding -->
+<!-- data passing from child to parent -->
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        class Child extends React.Component {
+            render() {
+                const { displayData } = this.props
+                return (
+                    <h1>{displayData}</h1>
+                )
+            }
+        }
+
+        class Parent extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    displayData: 0,
+                    timerRef: null
+                };
+            }
+            setTimer() {
+                const _this = this;
+                return setInterval(function (){
+                    _this.setState({
+                            displayData: _this.state.displayData + 1
+                        })
+                }, 1000)
+            }
+
+            onStartTimer() {
+                if (this.state.timerRef === null) {
+                    this.setState({
+                        timerRef: this.setTimer.bind(this)(),
+                    });
+                }
+            }
+            onStopTimer() {
+                clearInterval(this.state.timerRef);
+                this.setState({
+                    timerRef: null
+                })
+            }
+            render() {
+                console.log(this.state)
+                return (
+                    <div>
+                        <Child displayData={this.state.displayData} />
+                        <button onClick={this.onStartTimer.bind(this)}>Start</button>
+                        <button onClick={this.onStopTimer.bind(this)}>Stop</button>
+                    </div>
+                )
+            };
+        }
+
+        ReactDOM.render(<Parent />, document.getElementById("root"))
+    </script>
+
+</body>
+
+</html>
